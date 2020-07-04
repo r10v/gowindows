@@ -334,7 +334,7 @@ const (
 	// 把不能直接转换成相应多字节字符的Unicode字符转换成lpDefaultChar指定的默认字符。也就是说，如果把Unicode转换成多字节字符，然后再转换回来，你并不一定得到相同的Unicode字符，因为这期间可能使用了默认字符。此选项可以单独使用，也可以和其他选项一起使用。
 	// 对于需要验证的字符串，例如文件，资源和用户名，应用程序应始终使用WC_NO_BEST_FIT_CHARS标志。此标志阻止函数将字符映射到看似相似但具有非常不同语义的字符。在某些情况下，语义变化可能是极端的。例如，“∞”（无穷大）的符号在某些代码页中映射到8（8）。
 	WC_NO_BEST_FIT_CHARS WideChar2MultiByteFlags = 0x00000400 // do not use best fit chars
-//#endif /* WINVER >= 0x0500 */
+	//#endif /* WINVER >= 0x0500 */
 )
 
 // wchar(UTF-16LE) 转换到 char

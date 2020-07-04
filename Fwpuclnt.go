@@ -206,7 +206,7 @@ const (
 	IPPROTO_RESERVED_WNV          = 260
 	IPPROTO_RESERVED_MAX          = 261
 
-//} IPPROTO, *PIPROTO;
+	//} IPPROTO, *PIPROTO;
 )
 
 //typedef /* [v1_enum] */

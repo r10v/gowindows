@@ -19,10 +19,10 @@ func MessageBox(caption, text string, style uintptr) (result int, err error) {
 	// var hwnd HWND
 
 	ret, _, callErr := messageBox.Call(
-		0, // HWND
+		0,                                                          // HWND
 		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(text))),    // Text
 		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(caption))), // Caption
-		style, // type
+		style,                                                      // type
 	)
 	//TODO: 需要处理 err
 	if err != nil {
