@@ -1,4 +1,4 @@
-module gowindows
+module github.com/r10v/gowindows
 
 go 1.13
 
