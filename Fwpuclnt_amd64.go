@@ -30,7 +30,7 @@ type FwpmFilter0 struct {
 	ProviderData        FwpByteBlob
 	LayerKey            GUID
 	SubLayerKey         GUID
-	Weight              FwpValue0 // 值越大优先级越高
+	Weight              FwpValue0
 	NumFilterConditions uint32
 	FilterCondition     *FwpmFilterCondition0
 	Action              FwpmAction0

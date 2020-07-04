@@ -1,6 +1,7 @@
 package gowindows
 
 import (
+	"fmt"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -17,6 +18,18 @@ var (
 	fwpmFilterAdd0            = fwpuclnt.NewProc("FwpmFilterAdd0")
 	fwpmFilterDeleteById0     = fwpuclnt.NewProc("FwpmFilterDeleteById0")
 )
+
+type FwpmError struct {
+	r1 DWord
+}
+
+func newFwpmError(r1 DWord) error {
+	return &FwpmError{r1: r1}
+}
+
+func (e *FwpmError) Error() string {
+	return fmt.Sprintf("r1:%X", e.r1)
+}
 
 // FwpmEngineOpen0
 // The FwpmEngineOpen0 function opens a session to the filter engine.
