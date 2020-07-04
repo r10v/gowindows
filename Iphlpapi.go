@@ -72,24 +72,24 @@ const (
 	STATUS_ABANDONED_WAIT_0 DWord = 0x00000080
 	STATUS_USER_APC         DWord = 0x000000C0
 
-	WAIT_OBJECT_0      DWord = STATUS_WAIT_0 + 0
+	WAIT_OBJECT_0            = STATUS_WAIT_0 + 0
 	WAIT_FAILED        DWord = 0xFFFFFFFF
-	WAIT_ABANDONED     DWord = STATUS_ABANDONED_WAIT_0 + 0
-	WAIT_ABANDONED_0   DWord = STATUS_ABANDONED_WAIT_0 + 0
-	WAIT_IO_COMPLETION DWord = STATUS_USER_APC
+	WAIT_ABANDONED           = STATUS_ABANDONED_WAIT_0 + 0
+	WAIT_ABANDONED_0         = STATUS_ABANDONED_WAIT_0 + 0
+	WAIT_IO_COMPLETION       = STATUS_USER_APC
 )
 
 type MibIpForwardRow struct {
-	ForwardDest      [4]byte //目标网络
-	ForwardMask      [4]byte //掩码
-	ForwardPolicy    DWord   //ForwardPolicy:0x0
-	ForwardNextHop   [4]byte //网关
-	ForwardIfIndex   DWord   // 网卡索引 id
-	ForwardType      DWord   //3 本地接口  4 远端接口
-	ForwardProto     DWord   //3静态路由 2本地接口 5EGP网关
-	ForwardAge       DWord   //存在时间 秒
-	ForwardNextHopAS DWord   //下一跳自治域号码 0
-	ForwardMetric1   DWord   //度量衡(跃点数)，根据 ForwardProto 不同意义不同。
+	ForwardDest      [4]byte // Target network
+	ForwardMask      [4]byte // Mask
+	ForwardPolicy    DWord   // ForwardPolicy:0x0
+	ForwardNextHop   [4]byte // Gateway
+	ForwardIfIndex   DWord   // NIC index id
+	ForwardType      DWord   // 3 Local interface 4 Remote interface
+	ForwardProto     DWord   // 3 static routing 2 local interface 5 EGP gateway
+	ForwardAge       DWord   // Time of existence
+	ForwardNextHopAS DWord   // Next hop autonomous domain number 0
+	ForwardMetric1   DWord   // Weights and measures (hops) have different meanings according to ForwardProto.
 	ForwardMetric2   DWord
 	ForwardMetric3   DWord
 	ForwardMetric4   DWord
@@ -98,7 +98,7 @@ type MibIpForwardRow struct {
 
 type MibIpForwardTable struct {
 	NumEntries DWord
-	Table      [1]MibIpForwardRow //实际是 NumEntries 个
+	Table      [1]MibIpForwardRow // Actually NumEntries
 }
 
 func (row *MibIpForwardRow) String() string {
@@ -113,7 +113,7 @@ func (row *MibIpForwardRow) GetForwardDest() net.IP {
 func (row *MibIpForwardRow) SetForwardDest(v net.IP) error {
 	ipv4 := v.To4()
 	if len(ipv4) != net.IPv4len {
-		return fmt.Errorf("%v 不是ipv4地址。", v)
+		return fmt.Errorf("%v not an IPv4 address", v)
 	}
 
 	copy(row.ForwardDest[:], ipv4)
@@ -127,7 +127,7 @@ func (row *MibIpForwardRow) GetForwardMask() net.IPMask {
 func (row *MibIpForwardRow) SetForwardMask(v net.IPMask) error {
 	ipv4 := net.IP(v).To4()
 	if len(ipv4) != net.IPv4len {
-		return fmt.Errorf("%v 不是ipv4掩码。", v)
+		return fmt.Errorf("%v not an ipv4 mask", v)
 	}
 
 	copy(row.ForwardMask[:], ipv4)
@@ -141,7 +141,7 @@ func (row *MibIpForwardRow) GetForwardNextHop() net.IP {
 func (row *MibIpForwardRow) SetForwardNextHop(v net.IP) error {
 	ipv4 := v.To4()
 	if len(ipv4) != net.IPv4len {
-		return fmt.Errorf("%v 不是ipv4地址。", v)
+		return fmt.Errorf("%v not an IPv4 address", v)
 	}
 
 	copy(row.ForwardNextHop[:], ipv4)

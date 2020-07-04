@@ -1,6 +1,6 @@
 package gowindows
 
-//TODO:下面的需要仔细检查
+//TODO: The following need to be carefully checked
 
 const InvalidHandle = ^Handle(0)
 

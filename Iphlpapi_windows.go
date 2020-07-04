@@ -30,25 +30,25 @@ var (
 type IfOperStatus uint32
 
 const (
-	//接口已启动并且能够传递数据包。
+	// The interface is up and able to deliver data packets.
 	IfOperStatusUp IfOperStatus = 1
 
-	//接口已关闭，并且不处于传递数据包的状态。该 IfOperStatusDown状态有两个含义，这取决于的值 AdminStatus构件。如果AdminStatus未设置为 NET_IF_ADMIN_STATUS_DOWN且ifOperStatus设置为 IfOperStatusDown，则假定接口上存在故障条件。如果 AdminStatus设置为IfOperStatusDown，那么 ifOperStatus通常也会设置为 IfOperStatusDown或IfOperStatusNotPresent 并且接口上不一定存在故障情况。
+	// The interface has been shut down and is not in the state of delivering packets. The IfOperStatusDown status has two meanings, which depends on the value of the AdminStatus widget. If AdminStatus is not set to NET_IF_ADMIN_STATUS_DOWN and ifOperStatus is set to IfOperStatusDown, it is assumed that there is a fault condition on the interface. If AdminStatus is set to IfOperStatusDown, then ifOperStatus is usually also set to IfOperStatusDown or IfOperStatusNotPresent and there is not necessarily a fault condition on the interface.
 	IfOperStatusDown IfOperStatus = 2
 
-	//接口处于测试模式。
+	// The interface is in test mode.
 	IfOperStatusTesting IfOperStatus = 3
 
-	//接口的运行状态未知。
+	// The running status of the interface is unknown.
 	IfOperStatusUnknown IfOperStatus = 4
 
-	//接口实际上并不处于传递数据包的状态（它没有启动），而是处于挂起状态，等待一些外部事件。对于按需接口，此新状态标识接口正在等待事件将其置于IfOperStatusUp状态的情况。
+	// The interface is not actually in the state of transmitting data packets (it is not started), but is in a suspended state, waiting for some external events. For an on-demand interface, this new status identifies the situation where the interface is waiting for an event to place it in the IfOperStatusUp state.
 	IfOperStatusDormant IfOperStatus = 5
 
-	//IfOperStatusDown状态的 细化，指示相关接口是特定关闭的，因为托管系统中不存在某些组件（通常是硬件组件）。
+	// The refinement of the IfOperStatusDown status indicates that the relevant interface is specifically closed, because some components (usually hardware components) do not exist in the managed system.
 	IfOperStatusNotPresent IfOperStatus = 6
 
-	//IfOperStatusDown状态的 细化。此新状态表示此接口在一个或多个其他接口之上运行，并且此接口已关闭，因为这些较低层接口中的一个或多个已关闭。
+	// Refinement of IfOperStatusDown status. This new state means that this interface is running on top of one or more other interfaces, and this interface is down because one or more of these lower-level interfaces are down.
 	IfOperStatusLowerLayerDown IfOperStatus = 7
 )
 
@@ -114,7 +114,7 @@ typedef struct _IP_ADAPTER_ADDRESSES_LH {
   PIP_ADAPTER_DNS_SUFFIX             FirstDnsSuffix;
 } IP_ADAPTER_ADDRESSES_LH, *PIP_ADAPTER_ADDRESSES_LH;
 */
-//TODO: 结构应该存在问题，GUID 之前应该有字段不对！
+//TODO: There should be a problem with the structure. There should be some fields before the GUID!
 type IpAdapterAddresses struct {
 	Length                uint32
 	IfIndex               uint32
@@ -134,12 +134,12 @@ type IpAdapterAddresses struct {
 	IfType                uint32
 	OperStatus            IfOperStatus
 
-	// 以下是 windows xp sp1 之后添加的
+	// The following is added after windows xp sp1
 	ipv6IfIndex uint32
 	zoneIndices [16]uint32
 	firstPrefix *windows.IpAdapterPrefix
 
-	// 以下是 windows Vista 之后添加的
+	// The following is added after Windows Vista
 	transmitLinkSpeed      uint64
 	receiveLinkSpeed       uint64
 	firstWinsServerAddress *IpAdapterWinsServerAddress
@@ -157,7 +157,7 @@ type IpAdapterAddresses struct {
 	dhcpv6ClientDuidLength uint32
 	dhcpv6Iaid             uint32
 
-	// 以下是 windows Vista SP1 及 windows server 2008 之后添加的
+	// The following is added after windows Vista SP1 and windows server 2008
 	firstDnsSuffix *IpAdapterDnsSuffix
 }
 
@@ -242,17 +242,18 @@ func ip2uint32(ip net.IP) (uint32, error) {
 	return 0, fmt.Errorf("%v 不是 ipv6 格式。", ip)
 }
 
-// 一个字符数组，包含与地址关联的适配器的名称。与适配器的友好名称不同，AdapterName中指定的适配器名称是永久性的，用户无法修改。
+// An array of characters containing the name of the adapter associated with the address. Unlike the friendly name of the adapter, the adapter name specified in AdapterName is permanent and cannot be modified by the user.
 func (aa *IpAdapterAddresses) GetAdapterName() string {
 	// C:/Go/src/net/interface_windows.go:77
 	return string((*(*[10000]byte)(unsafe.Pointer(aa.AdapterName)))[:])
 }
+
 func (aa *IpAdapterAddresses) GetLuid() (IfLuid, error) {
 	tz := aa.Length
 	fz := unsafe.Offsetof(aa.luid) + unsafe.Sizeof(aa.luid)
 
-	// 判断结构是否包含了指定的字段
-	// 不同版本的 windows 包含的字段不同，老版本的不包含新版本的字段。
+	// Determine whether the structure contains the specified field
+	// Different versions of windows contain different fields, the old version does not contain the new version field.
 	if tz < uint32(fz) {
 		return IfLuid(0), fmt.Errorf("Length(%v)<%v", tz, fz)
 	}
@@ -260,14 +261,14 @@ func (aa *IpAdapterAddresses) GetLuid() (IfLuid, error) {
 	return aa.luid, nil
 }
 
-// 适配器的接收链路的当前速度（以每秒位数为单位）。
-// 注意   此结构成员仅适用于Windows Vista及更高版本。
+// The current speed of the adapter's receive link (in bits per second).
+// Note This structure member only applies to Windows Vista and higher.
 func (aa *IpAdapterAddresses) GetReceiveLinkSpeed() (uint64, error) {
 	tz := aa.Length
 	fz := unsafe.Offsetof(aa.receiveLinkSpeed) + unsafe.Sizeof(aa.receiveLinkSpeed)
 
-	// 判断结构是否包含了指定的字段
-	// 不同版本的 windows 包含的字段不同，老版本的不包含新版本的字段。
+	// Determine whether the structure contains the specified field
+	// Different versions of windows contain different fields, the old version does not contain the new version field.
 	if tz < uint32(fz) {
 		return 0, fmt.Errorf("Length(%v)<%v", tz, fz)
 	}
@@ -278,8 +279,8 @@ func (aa *IpAdapterAddresses) GetNetworkGuid() (NetworkGuid, error) {
 	tz := aa.Length
 	fz := unsafe.Offsetof(aa.networkGuid) + unsafe.Sizeof(aa.networkGuid)
 
-	// 判断结构是否包含了指定的字段
-	// 不同版本的 windows 包含的字段不同，老版本的不包含新版本的字段。
+	// Determine whether the structure contains the specified field
+	// Different versions of windows contain different fields, the old version does not contain the new version field.
 	if tz < uint32(fz) {
 		return NetworkGuid{}, fmt.Errorf("Length(%v)<%v", tz, fz)
 	}
@@ -300,8 +301,8 @@ func (aa *IpAdapterAddresses) GetGatewayAddress() ([]*IpAdapterGatewayAddress, e
 	tz := aa.Length
 	fz := unsafe.Offsetof(aa.firstGatewayAddress) + unsafe.Sizeof(aa.firstGatewayAddress)
 
-	// 判断结构是否包含了指定的字段
-	// 不同版本的 windows 包含的字段不同，老版本的不包含新版本的字段。
+	// Determine whether the structure contains the specified field
+	// Different versions of windows contain different fields, the old version does not contain the new version field.
 	if tz < uint32(fz) {
 		return nil, fmt.Errorf("Length(%v)<%v", tz, fz)
 	}
@@ -321,8 +322,8 @@ func (aa *IpAdapterAddresses) GetHardwareAddr() (net.HardwareAddr, error) {
 	tz := aa.Length
 	fz := unsafe.Offsetof(aa.PhysicalAddressLength) + unsafe.Sizeof(aa.PhysicalAddressLength)
 
-	// 判断结构是否包含了指定的字段
-	// 不同版本的 windows 包含的字段不同，老版本的不包含新版本的字段。
+	// Determine whether the structure contains the specified field
+	// Different versions of windows contain different fields, the old version does not contain the new version field.
 	if tz < uint32(fz) {
 		return nil, fmt.Errorf("Length(%v)<%v", tz, fz)
 	}
@@ -369,8 +370,8 @@ func Sockaddr2IpAddr(rd *syscall.RawSockaddrAny) (net.IPAddr, error) {
 	}
 }
 
-// 注意 windows xp  IpAdapterUnicastAddress 不包含 OnLinkPrefixLength 字段，即无法获取ip掩码。
-// 参考：https://docs.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-_ip_adapter_unicast_address_lh
+// Note that windows xp IpAdapterUnicastAddress does not contain the OnLinkPrefixLength field, that is, the ip mask cannot be obtained.
+// Reference：https://docs.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-_ip_adapter_unicast_address_lh
 func UnicastIpAddress2IpNet(ua *windows.IpAdapterUnicastAddress) (net.IPNet, error) {
 	rd := ua.Address.Sockaddr
 	sa, err := rd.Sockaddr()
@@ -378,9 +379,9 @@ func UnicastIpAddress2IpNet(ua *windows.IpAdapterUnicastAddress) (net.IPNet, err
 		return net.IPNet{}, err
 	}
 
-	// windows xp 不存在 onLinkPrefixLength 字段
-	// 不过实测这里判断无效，因为 winxp 32/64 结构长度都是 48 ，比 ua.OnLinkPrefixLength 长度 45 大。
-	// 使用未定义行为并不是一个好主意，所以还是保留了这个部分判断。
+	// There is no onLinkPrefixLength field in windows xp
+	// However, the actual judgment here is invalid because the length of the winxp 32/64 structure is 48, which is larger than the length of ua.OnLinkPrefixLength by 45.
+	// Using undefined behavior is not a good idea, so this part of the judgment is retained.
 	// https://docs.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-_ip_adapter_unicast_address_lh
 	onLinkPrefixLength := 0
 	tz := ua.Length
@@ -405,8 +406,8 @@ func (aa *IpAdapterAddresses) GetDnsServerAddress() ([]*windows.IpAdapterDnsServ
 	tz := aa.Length
 	fz := unsafe.Offsetof(aa.FirstDnsServerAddress) + unsafe.Sizeof(aa.FirstDnsServerAddress)
 
-	// 判断结构是否包含了指定的字段
-	// 不同版本的 windows 包含的字段不同，老版本的不包含新版本的字段。
+	// Determine whether the structure contains the specified field
+	// Different versions of windows contain different fields, the old version does not contain the new version field.
 	if tz < uint32(fz) {
 		return nil, fmt.Errorf("Length(%v)<%v", tz, fz)
 	}
@@ -436,15 +437,15 @@ func (aa *IpAdapterAddresses) GetDnsServerIpAddress() ([]net.IPAddr, error) {
 	return res, nil
 }
 
-// 获得单播地址列表
-// 注意 windows xp  IpAdapterUnicastAddress 不包含 OnLinkPrefixLength 字段，即无法获取ip掩码。
+// Get the list of unicast addresses
+// Note that windows xp IpAdapterUnicastAddress does not contain the OnLinkPrefixLength field, that is, the ip mask cannot be obtained.
 // 参考：https://docs.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-_ip_adapter_unicast_address_lh
 func (aa *IpAdapterAddresses) GetUnicastAddress() ([]*windows.IpAdapterUnicastAddress, error) {
 	tz := aa.Length
 	fz := unsafe.Offsetof(aa.FirstUnicastAddress) + unsafe.Sizeof(aa.FirstUnicastAddress)
 
-	// 判断结构是否包含了指定的字段
-	// 不同版本的 windows 包含的字段不同，老版本的不包含新版本的字段。
+	// Determine whether the structure contains the specified field
+	// Different versions of windows contain different fields, the old version does not contain the new version field.
 	if tz < uint32(fz) {
 		return nil, fmt.Errorf("Length(%v)<%v", tz, fz)
 	}
@@ -458,9 +459,9 @@ func (aa *IpAdapterAddresses) GetUnicastAddress() ([]*windows.IpAdapterUnicastAd
 	return res, nil
 }
 
-// 获得单播地址列表
-// 注意 windows xp  IpAdapterUnicastAddress 不包含 OnLinkPrefixLength 字段，即无法获取ip掩码。
-// 所以 windows xp 下掩码将永远为0
+// Get the list of unicast addresses
+// Note that windows xp IpAdapterUnicastAddress does not contain the OnLinkPrefixLength field, that is, the ip mask cannot be obtained.
+// So the mask under windows xp will always be 0
 // 参考：https://docs.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-_ip_adapter_unicast_address_lh
 func (aa *IpAdapterAddresses) GetUnicastIpAddress() ([]net.IPNet, error) {
 	ads, err := aa.GetUnicastAddress()
@@ -480,7 +481,7 @@ func (aa *IpAdapterAddresses) GetUnicastIpAddress() ([]net.IPNet, error) {
 }
 
 // https://docs.microsoft.com/en-us/windows/desktop/api/iphlpapi/nf-iphlpapi-getadaptersaddresses
-// 实测 win10 x64 下可以获得断开网卡的固定ip
+// Obtain fixed IP of disconnected network card under win10 x64
 func AdapterAddresses() ([]*IpAdapterAddresses, error) {
 	var b []byte
 	l := uint32(15000) // recommended initial size
@@ -500,7 +501,7 @@ func AdapterAddresses() ([]*IpAdapterAddresses, error) {
 			return nil, os.NewSyscallError("getadaptersaddresses", err)
 		}
 	}
-	//todo 需要确认是否存在内存释放问题，虽然标准库也是这样做的。
+	//todo: Need to confirm whether there is a problem of memory release, although the standard library does the same.
 	var aas []*IpAdapterAddresses
 	for aa := (*IpAdapterAddresses)(unsafe.Pointer(&b[0])); aa != nil; aa = aa.Next {
 		aas = append(aas, aa)
@@ -557,7 +558,7 @@ func CreateIpForwardEntry(row *MibIpForwardRow) error {
 	return nil
 }
 
-// 必须提供以下成员：dwForwardIfIndex，dwForwardDest，dwForwardMask，dwForwardNextHop和dwForwardProto
+// The following members must be provided：dwForwardIfIndex，dwForwardDest，dwForwardMask，dwForwardNextHop和dwForwardProto
 func DeleteIpForwardEntry(row *MibIpForwardRow) error {
 	r1, _, e1 := deleteIpForwardEntry.Call(uintptr(unsafe.Pointer(row)))
 	if r1 != 0 {
@@ -623,7 +624,7 @@ func NotifyRouteChange(handle *Handle, overlapped *Overlapped) error {
 //  LPOVERLAPPED notifyOverlapped
 //);
 // https://docs.microsoft.com/zh-cn/windows/desktop/api/iphlpapi/nf-iphlpapi-cancelipchangenotify
-// 返回值：
+// return value：
 //		bool 	如果当前没有 NotifyAddrChange 或 NotifyRouteChange 调用或 overlapped 无效，返回 false
 func CancelIPChangeNotify(overlapped *Overlapped) (bool, error) {
 	r1, _, _ := cancelIPChangeNotify.Call(uintptr(unsafe.Pointer(overlapped)))
@@ -642,8 +643,8 @@ type IPChangeNotify struct {
 	hasRoute     bool
 	addrOverlap  *Overlapped
 	routeOverlap *Overlapped
-	//addrHand     Handle // 指向HANDLE变量的指针，该变量接收在异步通知中使用的句柄。
-	//routeHand    Handle // 指向HANDLE变量的指针，该变量接收在异步通知中使用的句柄。
+	//addrHand     Handle // Pointer to the HANDLE variable that receives the handle used in the asynchronous notification.
+	//routeHand    Handle // Pointer to the HANDLE variable that receives the handle used in the asynchronous notification.
 	C chan *IPChangeNotifyChanData
 }
 
@@ -713,7 +714,7 @@ func (n *IPChangeNotify) Reset(hasAddr, hasRoute bool) error {
 	n.rwm.Lock()
 	defer n.rwm.Unlock()
 
-	// 关闭可能存在的
+	// Close possible
 	n.close()
 
 	c := n.C
@@ -843,7 +844,7 @@ func (s IfOperStatus) String() string {
 //  PULONG           pdwSize,
 //  BOOL             bOrder
 //);
-// 实测 windows 10 下无法获得断开网卡的ip
+// The measured IP of the disconnected network card cannot be obtained under Windows 10
 func GetIpAddrTable(order bool) ([]MibIpAddrRowW2k, error) {
 	_order := 0
 	if order {

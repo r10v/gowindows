@@ -6,7 +6,7 @@ const (
 	PROCESS_VM_READ = 0x0010
 )
 
-// 自适应版本，支持 32位读32位，64位读64位，但是不支持 32位读64位。
+// The self-adaptive version supports 32-bit reading 32-bit, 64-bit reading 64-bit, but does not support 32-bit reading 64-bit.
 type PROCESS_BASIC_INFORMATION struct {
 	Reserved1       uint
 	PebBaseAddress  uint
@@ -15,7 +15,7 @@ type PROCESS_BASIC_INFORMATION struct {
 	Reserved3       uint
 }
 
-// 64位版本，支持 32位读64位，64位读64位
+// 64-bit version, support 32-bit read 64-bit, 64-bit read 64-bit
 type PROCESS_BASIC_INFORMATION64 struct {
 	Reserved1       uint64
 	PebBaseAddress  uint64

@@ -32,7 +32,7 @@ func StringFromGUID2(guid *GUID) (string, error) {
 
 /*
 // CLSID == GUID
-// windows 的要求必须系统注册了，否则会报错无法转换
+// The requirements of windows must be registered by the system, otherwise it will report an error and cannot be converted
 func GUIDFromString(s string) (guid GUID, err error) {
 	var a *uint16
 	a, err = windows.UTF16PtrFromString(s)

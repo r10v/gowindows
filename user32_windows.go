@@ -62,7 +62,7 @@ func SendMessage(hWnd Handle, msg uint32, wParam, lParam uintptr) error {
 		lParam,
 		0,
 		0)
-	//TODO: 需要处理 err
+	//TODO: Need to process err
 
 	return nil
 }

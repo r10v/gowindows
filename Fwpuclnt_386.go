@@ -34,10 +34,10 @@ type FwpmFilter0 struct {
 	NumFilterConditions uint32
 	FilterCondition     *FwpmFilterCondition0
 	Action              FwpmAction0
-	_                   int8 // 由于 C 代码 ProviderContextKey 可能为 uint64，所以c代码会做64未对其。 int8 的目的是强制 64 位对其。
-	ProviderContextKey  GUID // 另一个可能，UINT64 rawContext
+	_                   int8 // Since the C code ProviderContextKey may be uint64, so the C code will do 64 unaligned. The purpose of int8 is to force 64 bits on it.
+	ProviderContextKey  GUID // Another possibility, UINT64 rawContext
 	Reserved            *GUID
-	_                   int8 // int8 的目的是强制 64 位对其。
+	_                   int8 // The purpose of int8 is to force 64 bits on it.
 	FilterId            uint64
 	EffectiveWeight     FwpValue0
 }

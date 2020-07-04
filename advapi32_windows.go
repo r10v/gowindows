@@ -38,7 +38,7 @@ func adjustTokenPrivileges(token windows.Token, disableAllPrivileges bool, newst
 	return
 }
 
-// AdjustTokenPrivileges功能允许或禁止特定的特权访问令牌。启用或禁用访问令牌中的权限需要TOKEN_ADJUST_PRIVILEGES访问权限。
+// The AdjustTokenPrivileges function allows or prohibits specific privileged access tokens. TOKEN_ADJUST_PRIVILEGES access permission is required to enable or disable permissions in the access token.
 // https://msdn.microsoft.com/en-us/library/windows/desktop/aa375202(v=vs.85).aspx
 func AdjustTokenPrivileges(token windows.Token, disableAllPrivileges bool, newstate *TOKEN_PRIVILEGES, buflen uint32, prevstate *TOKEN_PRIVILEGES, returnlen *uint32) error {
 	ret, err := adjustTokenPrivileges(token, disableAllPrivileges, newstate, buflen, prevstate, returnlen)
@@ -54,7 +54,7 @@ func AdjustTokenPrivileges(token windows.Token, disableAllPrivileges bool, newst
 	return err
 }
 
-// LookupPrivilegeValue函数检索 本地唯一性标识符（LUID）一个指定系统上用于局部地表示指定的权限名称。
+// The LookupPrivilegeValue function retrieves a Locally Unique Identifier (LUID), a localized name used on the designated system to represent the designated authority.
 // https://docs.microsoft.com/en-us/windows/desktop/api/winbase/nf-winbase-lookupprivilegevaluea
 func LookupPrivilegeValue(systemname *uint16, name *uint16, luid *LUID) (err error) {
 	r1, _, e1 := syscall.Syscall(procLookupPrivilegeValueW.Addr(), 3, uintptr(unsafe.Pointer(systemname)), uintptr(unsafe.Pointer(name)), uintptr(unsafe.Pointer(luid)))
@@ -180,10 +180,11 @@ func SetNamedSecurityInfoW(objectName string, objectType SeObjectType, securityI
 	return nil
 }
 
-// 降低内核对象的安全级别
+// Reduce the security level of kernel objects
 func SetObjectToLowIntegrity(h Handle) error {
 	return SetObjectIntegrity(h, LOW_INTEGRITY_SDDL_SACL_W)
 }
+
 func SetObjectIntegrity(h Handle, stringSecurityDescriptor string) error {
 
 	var securityDescriptor SecurityDescriptor
@@ -216,11 +217,12 @@ func SetObjectIntegrity(h Handle, stringSecurityDescriptor string) error {
 	return nil
 }
 
-// 降低内核对象的安全级别
-// 不知道什么原因，对 mmap 无效，mmap直接在创建时指定可行。
+// Reduce the security level of kernel objects
+// I don't know what the reason is, it is invalid for mmap, mmap can be specified directly during creation.
 func SetObjectToLowIntegrityWithName(objectName string) error {
 	return SetObjectIntegrityWithName(objectName, LOW_INTEGRITY_SDDL_SACL_W)
 }
+
 func SetObjectIntegrityWithName(objectName string, stringSecurityDescriptor string) error {
 
 	var securityDescriptor SecurityDescriptor

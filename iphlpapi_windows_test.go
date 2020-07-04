@@ -16,7 +16,7 @@ func TestAdapterAddresses(t *testing.T) {
 	}
 
 	if len(as) <= 0 {
-		t.Fatalf("无网卡")
+		t.Fatalf("No network card")
 	}
 
 	for _, aa := range as {
@@ -40,7 +40,7 @@ func TestAdapterAddresses(t *testing.T) {
 			t.Error(err)
 		}
 		_ = guidStr
-		// 奇怪输出的全部都是一个值:{A5735777-2F40-11E8-A039-806E6F6E6963}
+		// All the strange output is a value: {A5735777-2F40-11E8-A039-806E6F6E6963}
 		t.Logf("guid:%v\r\n", guidStr)
 
 		uas, err := aa.GetUnicastIpAddress()
@@ -305,7 +305,7 @@ func TestGetIpForwardTable(t *testing.T) {
 }
 
 /*
-// 手工wifi切换网络测试通过
+// Manual wifi switching network test passed
 func TestNotifyAddrChangeSync(t *testing.T) {
 	t.Log("TestNotifyAddrChangeSync...")
 	err:=NotifyAddrChange(nil,nil)
@@ -316,7 +316,7 @@ func TestNotifyAddrChangeSync(t *testing.T) {
 }*/
 
 /*
-// 手工wifi切换网络测试通过
+// Manual wifi switching network test passed
 func TestNotifyRouteChangeSync(t *testing.T) {
 	t.Log("TestNotifyRouteChangeSync ...")
 	err:=NotifyRouteChange(nil,nil)
@@ -328,7 +328,7 @@ func TestNotifyRouteChangeSync(t *testing.T) {
 */
 
 /*
-// 手工wifi切换网络测试通过
+// Manual wifi switching network test passed
 func TestNotifyAddrChangeASync(t *testing.T) {
 	t.Log("TestNotifyAddrChangeASync...")
 
@@ -359,7 +359,7 @@ func TestNotifyAddrChangeASync(t *testing.T) {
 */
 
 /*
-// 手工wifi切换网络测试通过
+// Manual wifi switching network test passed
 func TestNotifyRouteChangeASync(t *testing.T) {
 	t.Log("TestNotifyRouteChangeASync...")
 
@@ -389,7 +389,7 @@ func TestNotifyRouteChangeASync(t *testing.T) {
 }
 */
 
-// 手工wifi切换网络测试通过
+// Manual wifi switching network test passed
 func TestCancelIPChangeNotify(t *testing.T) {
 	t.Log("TestCancelIPChangeNotify...")
 
@@ -444,7 +444,7 @@ func TestIPChangeNotify_Reset(t *testing.T) {
 	}
 
 
-	// 10 秒后取消
+	// 10 Cancel in seconds
 	go func(){
 		time.Sleep(20*time.Second)
 		t.Log(time.Now(), " [",name,"] close")
@@ -454,7 +454,7 @@ func TestIPChangeNotify_Reset(t *testing.T) {
 		}
 	}()
 
-	// 接收更改
+	// Receive changes
 	for {
 		select {
 		case v:=<-n.C:
@@ -472,7 +472,7 @@ func TestIPChangeNotify_Reset(t *testing.T) {
 }*/
 
 /*
-wifi 断开
+wifi disconnect
     iphlpapi_windows_test.go:421: 2018-12-31 21:29:27.3559343 +0800 CST m=+3.445919201 [2] &gowindows.IPChangeNotifyChanData{Err:error(nil), IsAddr:true, IsRoute:false}
     iphlpapi_windows_test.go:421: 2018-12-31 21:29:27.3739352 +0800 CST m=+3.463920101 [1] &gowindows.IPChangeNotifyChanData{Err:error(nil), IsAddr:true, IsRoute:false}
     iphlpapi_windows_test.go:410: 2018-12-31 21:29:44.9400476 +0800 CST m=+21.030032501  [ 2 ] close
@@ -480,7 +480,7 @@ wifi 断开
 */
 
 /*
-单个断开 wifi + 重新连接 wifi 时的消息
+Single disconnect wifi + message when reconnecting wifi
 
 
     iphlpapi_windows_test.go:419: 2018-12-25 16:02:23.7224344 +0800 CST m=+4.436488501 &gowindows.IPChangeNotifyChanData{Err:error(nil), IsAddr:false, IsRoute:true}

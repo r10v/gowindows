@@ -1,3 +1,3 @@
 package gowindows //import "github.com/gamexg/gowindows"
 
-// 这个文件的目的是方便 go-wrapper download 确定项目路径。
+// The purpose of this file is to facilitate go-wrapper download to determine the project path.

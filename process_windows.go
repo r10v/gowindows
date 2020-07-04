@@ -14,7 +14,7 @@ func GetProcessParameters(processHandle Handle) (string, string, error) {
 	}
 
 	if is64system == true && ptrSize == 4 {
-		// wow64 环境，复杂些
+		// wow64 environment, more complicated
 		pInfo := PROCESS_BASIC_INFORMATION64{}
 		size := uint32(unsafe.Sizeof(pInfo))
 
@@ -52,7 +52,7 @@ func GetProcessParameters(processHandle Handle) (string, string, error) {
 		return windows.UTF16ToString(imagePathName), windows.UTF16ToString(commandLine), nil
 
 	} else {
-		// 64程序@64位系统 或 32位程序@32位系统
+		// 64-program@64-bit system or 32-bit program@32-bit system
 
 		pInfo := PROCESS_BASIC_INFORMATION{}
 		size := uint32(unsafe.Sizeof(pInfo))
@@ -172,9 +172,9 @@ func makeCmdLine(args []string) string {
 	return s
 }
 
-// 另一个windows 启动新进程的实现
-// 创建原因是标准库的实现返回错误：
-// 注意：这个函数未释放 ProcessInformation.Process ，需要调用者去释放它。
+// The realization of another windows to start a new process
+// The reason for the creation is that the standard library implementation returns an error:
+// Note: This function does not release ProcessInformation.Process, the caller needs to release it.
 func MyCreateProcess(name string, hide bool, arg ...string) (*windows.ProcessInformation, error) {
 	args := makeCmdLine(append([]string{name}, arg...))
 
@@ -190,7 +190,7 @@ func MyCreateProcess(name string, hide bool, arg ...string) (*windows.ProcessInf
 
 	si := new(windows.StartupInfo)
 	si.Cb = uint32(unsafe.Sizeof(*si))
-	//si.Flags = windows.STARTF_USESTDHANDLES  // 注释掉，不使用标准输入输出
+	//si.Flags = windows.STARTF_USESTDHANDLES  // Commented out, do not use standard input and output
 
 	flags := uint32(windows.CREATE_UNICODE_ENVIRONMENT)
 

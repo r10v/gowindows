@@ -34,7 +34,7 @@ type FwpmFilter0 struct {
 	NumFilterConditions uint32
 	FilterCondition     *FwpmFilterCondition0
 	Action              FwpmAction0
-	ProviderContextKey  GUID // 另一个可能，UINT64 rawContext
+	ProviderContextKey  GUID // Another possibility, UINT64 rawContext
 	Reserved            *GUID
 	FilterId            uint64
 	EffectiveWeight     FwpValue0

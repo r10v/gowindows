@@ -10,15 +10,15 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// 创建无文件命名内存共享
+// Create no-file named memory share
 func CreateMmap(name string, size uint32, write bool) (*Mmap, error) {
 	return CreateMmapWithSecurityDescriptor(name, size, write, "")
 }
 
-// 按指定权限创建
-// 主要目的是服务创建，普通用户有权访问，UAC 也没问题。
-// securityDescriptor    "D:P(A;OICI;GWGR;;;SY)(A;OICI;GWGR;;;BA)(A;OICI;GWGR;;;IU)(A;OICI;GWGR;;;RC)"
-//“D：P（A; OICI; GA ;;; SY）（A; OICI; GA ;;; BA）（A; OICI; GR ;;; IU）”指定DACL。D：P表示这是一个DACL（而不是SACL ......你很少使用SACL），后面是几个控制谁可以访问的ACE字符串。每一个都是A（允许）并允许对象并包含继承（OICI）。第一个授予系统（SY）和管理员（BA，内置管理员）的所有访问权限（GA - 全部授予）。最后一次授予读取（GR）给交互式用户（IU），这些用户实际登录到会话。
+// Create with specified permissions
+// The main purpose is service creation, ordinary users have the right to access, and UAC is no problem.
+// securityDescriptor "D:P(A;OICI;GWGR;;;SY)(A;OICI;GWGR;;;BA)(A;OICI;GWGR;;;IU)(A;OICI;GWGR;;;RC )"
+//"D: P (A; OICI; GA;;; SY) (A; OICI; GA;;; BA) (A; OICI; GR;;; IU)" specifies DACL. D: P indicates that this is a DACL (not SACL...you rarely use SACL), followed by several ACE strings that control who can access. Each one is A (allowed) and allows objects and contains inheritance (OICI). The first grants all access rights (GA-grant all) to the system (SY) and the administrator (BA, built-in administrator). The last time read (GR) is granted to interactive users (IU), these users actually log into the session.
 // https://blog.csdn.net/qinlicang/article/details/5538307
 // https://stackoverflow.com/questions/898683/how-to-share-memory-between-services-and-user-processes
 func CreateMmapWithSecurityDescriptor(name string, size uint32, write bool, securityDescriptor string) (*Mmap, error) {
@@ -76,8 +76,8 @@ func CreateMmapWithSecurityDescriptor(name string, size uint32, write bool, secu
 	return m, nil
 }
 
-// 打开无文件命名内存共享
-// 虽然 MapViewOfFile 函数允许为0 ，但是当 size==0 时无法转换为 []byte ，所以不支持 size == 0。
+// Turn on no-name memory sharing
+// Although the MapViewOfFile function allows 0, it cannot be converted to []byte when size==0, so size == 0 is not supported.
 func OpenMmap(name string, size uint32, write bool) (*Mmap, error) {
 	if size == 0 {
 		return nil, fmt.Errorf("size==0")
@@ -113,7 +113,7 @@ func OpenMmap(name string, size uint32, write bool) (*Mmap, error) {
 	return m, nil
 }
 
-// 关闭、释放
+// close and release
 func (m *Mmap) Close() error {
 	if m.addr != uintptr(0) {
 		err := windows.UnmapViewOfFile(uintptr(m.addr))
@@ -135,7 +135,7 @@ func (m *Mmap) Close() error {
 
 	runtime.KeepAlive(m)
 
-	// 测试确保 runtime.SetFinalizer 正常工作
+	// Test to ensure that runtime.SetFinalizer is working properly
 	// fmt.Println("mmap.close()")
 	return nil
 }

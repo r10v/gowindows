@@ -19,7 +19,7 @@ func SetPrivilege(hToken windows.Token, privilege Privilege, bEnablePrivilege bo
 		return fmt.Errorf("LookupPrivilegeValue, %v", err)
 	}
 
-	// 第一步，获取当前权限设置
+	// The first step is to obtain the current permission settings
 	tp.PrivilegeCount = 1
 	tp.Privileges[0].Luid = luid
 	tp.Privileges[0].Attributes = 0
@@ -29,15 +29,14 @@ func SetPrivilege(hToken windows.Token, privilege Privilege, bEnablePrivilege bo
 		return fmt.Errorf("AdjustTokenPrivileges1, %v", err)
 	}
 
-	// 第二步，根据原来的权限设置权限
+	// The second step is to set permissions according to the original permissions
 	tpPrevious.PrivilegeCount = 1
 	tpPrevious.Privileges[0].Luid = luid
 
 	if bEnablePrivilege {
 		tpPrevious.Privileges[0].Attributes |= SE_PRIVILEGE_ENABLED
 	} else {
-		tpPrevious.Privileges[0].Attributes ^= (SE_PRIVILEGE_ENABLED &
-			tpPrevious.Privileges[0].Attributes)
+		tpPrevious.Privileges[0].Attributes ^= (SE_PRIVILEGE_ENABLED & tpPrevious.Privileges[0].Attributes)
 	}
 
 	err = AdjustTokenPrivileges(hToken, false, &tpPrevious, cbPrevious, nil, nil)

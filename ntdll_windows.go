@@ -25,7 +25,7 @@ func init() {
 	var err error
 	ntdll, err = windows.LoadDLL("ntdll.dll")
 	if err == nil {
-		// 这几个需要判断是否存在，所以无法使用延迟加载
+		// These need to be judged for existence, so lazy loading cannot be used
 		ntWow64QueryInformationProcess64, _ = ntdll.FindProc("NtWow64QueryInformationProcess64")
 		ntWow64ReadVirtualMemory64, _ = ntdll.FindProc("NtWow64ReadVirtualMemory64")
 		ntQueryInformationProcess, _ = ntdll.FindProc("NtQueryInformationProcess")
@@ -35,7 +35,7 @@ func init() {
 	}
 }
 
-// 只能用在 32位程序64位系统下
+// Can only be used on 32-bit programs and 64-bit systems
 func NtWow64QueryInformationProcess64(processHandle Handle, processInformationClass int32,
 	processInformation windows.Pointer, processInformationLength uint32, returnLength *uint32) error {
 
@@ -48,8 +48,8 @@ func NtWow64QueryInformationProcess64(processHandle Handle, processInformationCl
 		uintptr(unsafe.Pointer(returnLength)))
 
 	if int(r1) < 0 {
-		// 函数内部如果发现空间不匹配 r1 会等于 STATUS_INFO_LENGTH_MISMATCH(0xC0000004),
-		// 指示空间不匹配。
+		// If a space mismatch is found inside the function, r1 will be equal to STATUS_INFO_LENGTH_MISMATCH(0xC0000004),
+		// indicates that the space does not match.
 		if err != ERROR_SUCCESS {
 			return err
 		} else {
@@ -79,8 +79,8 @@ func NtQueryInformationProcess(processHandle Handle, processInformationClass int
 		uintptr(unsafe.Pointer(returnLength)))
 
 	if int(r1) < 0 {
-		// 函数内部如果发现空间不匹配 r1 会等于 STATUS_INFO_LENGTH_MISMATCH(0xC0000004),
-		// 指示空间不匹配。
+		// If a space mismatch is found inside the function, r1 will be equal to STATUS_INFO_LENGTH_MISMATCH(0xC0000004),
+		// indicates that the space does not match.
 
 		if err != ERROR_SUCCESS {
 			return err
@@ -110,11 +110,11 @@ func NtWow64ReadVirtualMemory64(processHandle Handle, baseAddress uint64,
 	var err error
 
 	if ptrSize == 8 {
-		// 64位程序，虽然理论不应该有这种情况
+		// 64-bit program, although the theory should not be the case
 		r1, _, err = ntWow64ReadVirtualMemory64.Call(uintptr(processHandle), uintptr(baseAddress),
 			uintptr(unsafe.Pointer(bufferData)), uintptr(bufferSize), uintptr(unsafe.Pointer(returnSize)))
 	} else {
-		// 32 位程序
+		// 32-bit program
 		r1, _, err = ntWow64ReadVirtualMemory64.Call(uintptr(processHandle),
 			uintptr(baseAddress), uintptr(baseAddress>>32), uintptr(unsafe.Pointer(bufferData)),
 			uintptr(bufferSize), uintptr(bufferSize>>32),
@@ -122,7 +122,7 @@ func NtWow64ReadVirtualMemory64(processHandle Handle, baseAddress uint64,
 	}
 
 	if int(r1) < 0 {
-		// 如果读操作跨越不可访问的区域将失败。
+		// If the read operation crosses an inaccessible area, it will fail.
 
 		if err != ERROR_SUCCESS {
 			return err
@@ -144,12 +144,12 @@ func ReadVirtualMemory(processHandle Handle, baseAddress uint,
 	var r1 uintptr
 	var err error
 
-	// 64位程序，虽然理论不应该有这种情况
+	// 64-bit program, although the theory should not be the case
 	r1, _, err = ntReadVirtualMemory.Call(uintptr(processHandle), uintptr(baseAddress),
 		uintptr(unsafe.Pointer(bufferData)), uintptr(bufferSize), uintptr(unsafe.Pointer(returnSize)))
 
 	if int(r1) < 0 {
-		// 如果读操作跨越不可访问的区域将失败。
+		// If the read operation crosses an inaccessible area, it will fail.
 
 		if err != ERROR_SUCCESS {
 			return err
@@ -162,7 +162,7 @@ func ReadVirtualMemory(processHandle Handle, baseAddress uint,
 }
 
 // https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/ns-wdm-_osversioninfow
-// 版本号参考: https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/ns-wdm-_osversioninfoexw
+// Version number reference: https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/ns-wdm-_osversioninfoexw
 //typedef struct _OSVERSIONINFOW {
 //  ULONG dwOSVersionInfoSize;
 //  ULONG dwMajorVersion;
@@ -245,10 +245,10 @@ func (v *OsVsersionInfow) GetString() string {
 	return fmt.Sprintf("%v.%v", v.MajorVersion, v.MinorVersion)
 }
 
-// 这个函数可以获得 win8 之后正确的版本号
-// 但是 Windows2003之前 RtlGetVersion 的行为在兼容模式下和 GetVersionExW 不一致，
-// Vista 之后在兼容模式下它的行为和 GetVersionExW 一致返回的是兼容的目标版本的系统版本。
-// Windows系统版本判定那些事儿 https://blog.csdn.net/magictong/article/details/40753519
+// This function can get the correct version number after win8
+// But the behavior of RtlGetVersion before Windows 2003 is not consistent with GetVersionExW in compatibility mode,
+// After Vista, in compatibility mode, its behavior and GetVersionExW return the system version of the compatible target version.
+// Windows system version determines those things https://blog.csdn.net/magictong/article/details/40753519
 // https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/nf-wdm-rtlgetversion
 func RtlGetVersion() (*OsVsersionInfow, error) {
 	if ntRtlGetVersion == nil {

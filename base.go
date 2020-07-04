@@ -22,9 +22,9 @@ const ERROR_IO_PENDING = 997
 
 const INFINITE = syscall.INFINITE
 
-// 转换为 []byte 切片
-// 注意，请自己保证内存引用，按文档，reflect.SliceHeader 不会保存 data 的指针，可能会被垃圾回收。
-// cgo C 库里面有这个实现 C.GoBytes，但是 C.GoBytes 是拷贝内存的实现，内存共享等情况不能使用。
+// Convert to []byte slice
+// Note, please ensure that the memory reference, according to the documentation, reflect.SliceHeader will not save the data pointer, may be garbage collected.
+// This implementation of C.GoBytes is in the cgo C library, but C.GoBytes is an implementation of copying memory, and memory sharing cannot be used.
 func ToBytes(data uintptr, len, cap int) []byte {
 	var o []byte
 	sliceHeader := (*reflect.SliceHeader)((unsafe.Pointer(&o)))
@@ -34,9 +34,9 @@ func ToBytes(data uintptr, len, cap int) []byte {
 	return o
 }
 
-// 更改切片尺寸
-// 一些 windows 结构内数组长度不确定，这个函数可以强制转换出指定长度的切片
-// 输入值：  v 必须是切片的指针
+// Change the slice size
+// The length of the array in some windows structures is uncertain, this function can force the conversion of the slice of the specified length
+// Input value: v must be a pointer to slice
 func ChangeSliceSize(v interface{}, Len, Cap int) error {
 	if reflect.TypeOf(v).Kind() != reflect.Ptr {
 		return fmt.Errorf("v必须是切片的指针。")

@@ -9,8 +9,7 @@ import (
 type FwpmSessionType uint32
 
 const (
-
-	// 设置此标志后，会话结束时会自动删除会话期间添加的所有对象。
+	// When this flag is set, all objects added during the session will be automatically deleted at the end of the session.
 	FWPM_SESSION_FLAG_DYNAMIC FwpmSessionType = 0x00000001
 
 	FWPM_SESSION_FLAG_RESERVED FwpmSessionType = 0x10000000
@@ -20,71 +19,71 @@ const (
 type FwpmSublayerFlag uint32
 
 const (
-	// 导致子层持久化，在BFE停止/启动时存活。
-	FWPM_SUBLAYER_FLAG_PERSISTENT FwpmSublayerFlag = (0x00000001)
+	// Causes the sublayer to persist and survive when the BFE stops/starts.
+	FWPM_SUBLAYER_FLAG_PERSISTENT FwpmSublayerFlag = 0x00000001
 )
 
 type FwpDataType int
 
 const (
-	FWP_EMPTY                         FwpDataType = 0
-	FWP_UINT8                         FwpDataType = (FWP_EMPTY + 1)
-	FWP_UINT16                        FwpDataType = (FWP_UINT8 + 1)
-	FWP_UINT32                        FwpDataType = (FWP_UINT16 + 1)
-	FWP_UINT64                        FwpDataType = (FWP_UINT32 + 1)
-	FWP_INT8                          FwpDataType = (FWP_UINT64 + 1)
-	FWP_INT16                         FwpDataType = (FWP_INT8 + 1)
-	FWP_INT32                         FwpDataType = (FWP_INT16 + 1)
-	FWP_INT64                         FwpDataType = (FWP_INT32 + 1)
-	FWP_FLOAT                         FwpDataType = (FWP_INT64 + 1)
-	FWP_DOUBLE                        FwpDataType = (FWP_FLOAT + 1)
-	FWP_BYTE_ARRAY16_TYPE             FwpDataType = (FWP_DOUBLE + 1)
-	FWP_BYTE_BLOB_TYPE                FwpDataType = (FWP_BYTE_ARRAY16_TYPE + 1)
-	FWP_SID                           FwpDataType = (FWP_BYTE_BLOB_TYPE + 1)
-	FWP_SECURITY_DESCRIPTOR_TYPE      FwpDataType = (FWP_SID + 1)
-	FWP_TOKEN_INFORMATION_TYPE        FwpDataType = (FWP_SECURITY_DESCRIPTOR_TYPE + 1)
-	FWP_TOKEN_ACCESS_INFORMATION_TYPE FwpDataType = (FWP_TOKEN_INFORMATION_TYPE + 1)
-	FWP_UNICODE_STRING_TYPE           FwpDataType = (FWP_TOKEN_ACCESS_INFORMATION_TYPE + 1)
-	FWP_BYTE_ARRAY6_TYPE              FwpDataType = (FWP_UNICODE_STRING_TYPE + 1)
+	FWP_EMPTY             FwpDataType = 0
+	FWP_UINT8                         = FWP_EMPTY + 1
+	FWP_UINT16                        = FWP_UINT8 + 1
+	FWP_UINT32                        = FWP_UINT16 + 1
+	FWP_UINT64                        = FWP_UINT32 + 1
+	FWP_INT8                          = FWP_UINT64 + 1
+	FWP_INT16                         = FWP_INT8 + 1
+	FWP_INT32                         = FWP_INT16 + 1
+	FWP_INT64                         = FWP_INT32 + 1
+	FWP_FLOAT                         = FWP_INT64 + 1
+	FWP_DOUBLE                        = FWP_FLOAT + 1
+	FWP_BYTE_ARRAY16_TYPE             = FWP_DOUBLE + 1
+	FWP_BYTE_BLOB_TYPE                = FWP_BYTE_ARRAY16_TYPE + 1
+	FWP_SID                           = FWP_BYTE_BLOB_TYPE + 1
+	FWP_SECURITY_DESCRIPTOR_TYPE             = FWP_SID + 1
+	FWP_TOKEN_INFORMATION_TYPE               = FWP_SECURITY_DESCRIPTOR_TYPE + 1
+	FWP_TOKEN_ACCESS_INFORMATION_TYPE             = FWP_TOKEN_INFORMATION_TYPE + 1
+	FWP_UNICODE_STRING_TYPE                       = FWP_TOKEN_ACCESS_INFORMATION_TYPE + 1
+	FWP_BYTE_ARRAY6_TYPE                          = FWP_UNICODE_STRING_TYPE + 1
 	FWP_SINGLE_DATA_TYPE_MAX          FwpDataType = 0xff
-	FWP_V4_ADDR_MASK                  FwpDataType = (FWP_SINGLE_DATA_TYPE_MAX + 1)
-	FWP_V6_ADDR_MASK                  FwpDataType = (FWP_V4_ADDR_MASK + 1)
-	FWP_RANGE_TYPE                    FwpDataType = (FWP_V6_ADDR_MASK + 1)
-	FWP_DATA_TYPE_MAX                 FwpDataType = (FWP_RANGE_TYPE + 1)
+	FWP_V4_ADDR_MASK                              = FWP_SINGLE_DATA_TYPE_MAX + 1
+	FWP_V6_ADDR_MASK                              = FWP_V4_ADDR_MASK + 1
+	FWP_RANGE_TYPE                                = FWP_V6_ADDR_MASK + 1
+	FWP_DATA_TYPE_MAX                             = FWP_RANGE_TYPE + 1
 )
 
 type FwpMatchType int
 
 const (
 	FWP_MATCH_EQUAL                  FwpMatchType = 0
-	FWP_MATCH_GREATER                FwpMatchType = (FWP_MATCH_EQUAL + 1)
-	FWP_MATCH_LESS                   FwpMatchType = (FWP_MATCH_GREATER + 1)
-	FWP_MATCH_GREATER_OR_EQUAL       FwpMatchType = (FWP_MATCH_LESS + 1)
-	FWP_MATCH_LESS_OR_EQUAL          FwpMatchType = (FWP_MATCH_GREATER_OR_EQUAL + 1)
-	FWP_MATCH_RANGE                  FwpMatchType = (FWP_MATCH_LESS_OR_EQUAL + 1)
-	FWP_MATCH_FLAGS_ALL_SET          FwpMatchType = (FWP_MATCH_RANGE + 1)
-	FWP_MATCH_FLAGS_ANY_SET          FwpMatchType = (FWP_MATCH_FLAGS_ALL_SET + 1)
-	FWP_MATCH_FLAGS_NONE_SET         FwpMatchType = (FWP_MATCH_FLAGS_ANY_SET + 1)
-	FWP_MATCH_EQUAL_CASE_INSENSITIVE FwpMatchType = (FWP_MATCH_FLAGS_NONE_SET + 1)
-	FWP_MATCH_NOT_EQUAL              FwpMatchType = (FWP_MATCH_EQUAL_CASE_INSENSITIVE + 1)
-	FWP_MATCH_TYPE_MAX               FwpMatchType = (FWP_MATCH_NOT_EQUAL + 1)
+	FWP_MATCH_GREATER                             = FWP_MATCH_EQUAL + 1
+	FWP_MATCH_LESS                                = FWP_MATCH_GREATER + 1
+	FWP_MATCH_GREATER_OR_EQUAL                    = FWP_MATCH_LESS + 1
+	FWP_MATCH_LESS_OR_EQUAL                       = FWP_MATCH_GREATER_OR_EQUAL + 1
+	FWP_MATCH_RANGE                               = FWP_MATCH_LESS_OR_EQUAL + 1
+	FWP_MATCH_FLAGS_ALL_SET                       = FWP_MATCH_RANGE + 1
+	FWP_MATCH_FLAGS_ANY_SET                       = FWP_MATCH_FLAGS_ALL_SET + 1
+	FWP_MATCH_FLAGS_NONE_SET                      = FWP_MATCH_FLAGS_ANY_SET + 1
+	FWP_MATCH_EQUAL_CASE_INSENSITIVE              = FWP_MATCH_FLAGS_NONE_SET + 1
+	FWP_MATCH_NOT_EQUAL                           = FWP_MATCH_EQUAL_CASE_INSENSITIVE + 1
+	FWP_MATCH_TYPE_MAX                            = FWP_MATCH_NOT_EQUAL + 1
 )
 
 type FwpActionType uint32
 
 const (
-	FWP_ACTION_FLAG_TERMINATING     = (0x00001000)
-	FWP_ACTION_FLAG_NON_TERMINATING = (0x00002000)
-	FWP_ACTION_FLAG_CALLOUT         = (0x00004000)
+	FWP_ACTION_FLAG_TERMINATING     = 0x00001000
+	FWP_ACTION_FLAG_NON_TERMINATING = 0x00002000
+	FWP_ACTION_FLAG_CALLOUT         = 0x00004000
 
-	FWP_ACTION_BLOCK               = (0x00000001 | FWP_ACTION_FLAG_TERMINATING)
-	FWP_ACTION_PERMIT              = (0x00000002 | FWP_ACTION_FLAG_TERMINATING) //允许
-	FWP_ACTION_CALLOUT_TERMINATING = (0x00000003 | FWP_ACTION_FLAG_CALLOUT | FWP_ACTION_FLAG_TERMINATING)
-	FWP_ACTION_CALLOUT_INSPECTION  = (0x00000004 | FWP_ACTION_FLAG_CALLOUT | FWP_ACTION_FLAG_NON_TERMINATING)
-	FWP_ACTION_CALLOUT_UNKNOWN     = (0x00000005 | FWP_ACTION_FLAG_CALLOUT)
-	FWP_ACTION_CONTINUE            = (0x00000006 | FWP_ACTION_FLAG_NON_TERMINATING) //继续下一个过滤器
-	FWP_ACTION_NONE                = (0x00000007)
-	FWP_ACTION_NONE_NO_MATCH       = (0x00000008)
+	FWP_ACTION_BLOCK               = 0x00000001 | FWP_ACTION_FLAG_TERMINATING
+	FWP_ACTION_PERMIT              = 0x00000002 | FWP_ACTION_FLAG_TERMINATING //允许
+	FWP_ACTION_CALLOUT_TERMINATING = 0x00000003 | FWP_ACTION_FLAG_CALLOUT | FWP_ACTION_FLAG_TERMINATING
+	FWP_ACTION_CALLOUT_INSPECTION  = 0x00000004 | FWP_ACTION_FLAG_CALLOUT | FWP_ACTION_FLAG_NON_TERMINATING
+	FWP_ACTION_CALLOUT_UNKNOWN     = 0x00000005 | FWP_ACTION_FLAG_CALLOUT
+	FWP_ACTION_CONTINUE            = 0x00000006 | FWP_ACTION_FLAG_NON_TERMINATING //继续下一个过滤器
+	FWP_ACTION_NONE                = 0x00000007
+	FWP_ACTION_NONE_NO_MATCH       = 0x00000008
 )
 
 //
@@ -308,7 +307,7 @@ type FilterId uint64
 //} 	FWP_VALUE0;
 type FwpValue0 struct {
 	Type FwpDataType
-	// 需要存在指针，必须随位数变化，所以是 int。但是指针 gc 需要注意，记得使用 runtime.KeepAlive 保留引用，防止被垃圾回收。
+	// There needs to be a pointer, which must change with the number of digits, so it is int. But the pointer gc needs to be noted, remember to use runtime.KeepAlive to retain the reference to prevent garbage collection.
 	Data int
 }
 
@@ -430,7 +429,7 @@ func (fv *FwpConditionValue0) GetUint16() (uint16, error) {
 	return *((*uint16)(unsafe.Pointer(&fv.Data))), nil
 }
 
-// 注意，FwpConditionValue0 不会保留指针的引用，调用者记得执行 runtime.KeepAlive 防止 v 被垃圾回收。
+// Note that FwpConditionValue0 will not retain the pointer reference, the caller remembers to execute runtime.KeepAlive to prevent v from being garbage collected.
 func (fv *FwpConditionValue0) SetPUint64(v *uint64) error {
 	if fv.Type != FWP_UINT64 {
 		return fmt.Errorf("Type %v != FWP_UINT64", fv.Type)
@@ -440,7 +439,7 @@ func (fv *FwpConditionValue0) SetPUint64(v *uint64) error {
 	return nil
 }
 
-// 注意：垃圾回收需要自己注意！
+// Note: Garbage collection requires your own attention!
 func (fv *FwpConditionValue0) GetPUint64() (*uint64, error) {
 	if fv.Type != FWP_UINT64 {
 		return nil, fmt.Errorf("Type %v != FWP_UINT64", fv.Type)
@@ -448,7 +447,7 @@ func (fv *FwpConditionValue0) GetPUint64() (*uint64, error) {
 	return (*uint64)(unsafe.Pointer(uintptr(fv.Data))), nil
 }
 
-// 注意，FwpConditionValue0 不会保留指针的引用，调用者记得执行 runtime.KeepAlive 防止 v 被垃圾回收。
+// Note that FwpConditionValue0 will not retain the pointer reference, the caller remembers to execute runtime.KeepAlive to prevent v from being garbage collected.
 func (fv *FwpConditionValue0) SetByteBlob(v *FwpByteBlob) error {
 	if fv.Type != FWP_BYTE_BLOB_TYPE {
 		return fmt.Errorf("Type %v != FWP_BYTE_BLOB_TYPE", fv.Type)
@@ -457,7 +456,7 @@ func (fv *FwpConditionValue0) SetByteBlob(v *FwpByteBlob) error {
 	return nil
 }
 
-// 注意，垃圾回收需要自己注意！
+// Note that garbage collection requires your own attention!
 func (fv *FwpConditionValue0) GetByteBlob() (*FwpByteBlob, error) {
 	if fv.Type != FWP_BYTE_BLOB_TYPE {
 		return nil, fmt.Errorf("Type %v != FWP_BYTE_BLOB_TYPE", fv.Type)

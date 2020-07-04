@@ -1,7 +1,7 @@
 package gowindows
 
-// 标准 PEB 结构
-// 32位程序@32位系统 或 64位程序@64位系统
+// Standard PEB structure
+// 32-bit program @32-bit system or 64-bit program @64-bit system
 // https://docs.microsoft.com/zh-cn/windows/desktop/api/winternl/ns-winternl-_peb
 // http://terminus.rewolf.pl/terminus/structures/ntdll/_PEB_combined.html
 //typedef struct _PEB {
@@ -47,8 +47,8 @@ type PEB struct {
 	SessionId              uint32
 }
 
-// 64 位 PEB 结构
-// 在32位程序下也能够和 64位PEB结构一致，解决了32位、64位对齐不一致的问题
+// 64-bit PEB structure
+// Under the 32-bit program, it can also be consistent with the 64-bit PEB structure, which solves the problem of inconsistent 32-bit and 64-bit alignment.
 // https://docs.microsoft.com/zh-cn/windows/desktop/api/winternl/ns-winternl-_peb
 // http://terminus.rewolf.pl/terminus/structures/ntdll/_PEB_combined.html
 //typedef struct _PEB {
@@ -102,17 +102,17 @@ type RTL_USER_PROCESS_PARAMETERS64 struct {
 //PWSTR  Buffer;
 //} UNICODE_STRING;
 type UNICODE_STRING struct {
-	Length        uint16 // buffer的字节长度，不包括终止符“NULL”
+	Length        uint16 // The byte length of the buffer, excluding the terminator "NULL"
 	MaximumLength uint16
 
-	// 	指向以null结尾的16位Unicode字符串的指针。有关更多信息，请参阅[字体使用的字符集]（https://msdn.microsoft.com/library/windows/desktop/dd183415）。
+	// Pointer to a 16-bit Unicode string ending in null. For more information, see [Character Set Used by Fonts] (https://msdn.microsoft.com/library/windows/desktop/dd183415).
 	Buffer uint
 }
 type UNICODE_STRING64 struct {
-	Length        uint16 // buffer的字节长度，不包括终止符“NULL”
+	Length        uint16 // The byte length of the buffer, excluding the terminator "NULL"
 	MaximumLength uint16
-	_             [4]byte // 32位下强制64位对齐
+	_             [4]byte // Force 64-bit alignment under 32-bit
 
-	// 	指向以null结尾的16位Unicode字符串的指针。有关更多信息，请参阅[字体使用的字符集]（https://msdn.microsoft.com/library/windows/desktop/dd183415）。
+	// Pointer to a 16-bit Unicode string ending in null. For more information, see [Character Set Used by Fonts] (https://msdn.microsoft.com/library/windows/desktop/dd183415).
 	Buffer uint64
 }
